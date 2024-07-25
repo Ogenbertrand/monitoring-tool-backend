@@ -1,0 +1,3 @@
+[submodule "monitoring-tool-backend"]
+	path = monitoring-tool-backend
+	url = git@github.com:Ogenbertrand/monitoring-tool.git
