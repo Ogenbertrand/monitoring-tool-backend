@@ -50,8 +50,6 @@ ipython_config.py
 # Environments
 .env
 .env.*
-.venv/
-venv/
 
 # PyCharm
 .idea/
@@ -83,10 +81,8 @@ venv/
 .idea/scopes/
 .idea/codeStyles/
 .idea/codeStyleSettings.xml
-.idea/markdown-navigator.xml
 
 # PyCharm
-.idea/
 *.iml
 *.ipr
 *.iws
