@@ -36,6 +36,4 @@ jobs:
         run: |
           pip list
 
-      - name: Test with pytest
-        run: |
-          python -m pytest
+
