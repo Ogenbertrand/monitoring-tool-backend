@@ -8,7 +8,8 @@ app.config.from_object(Config)
 
 db.init_app(app)
 migrate = Migrate(app, db)
-@app.route('/api/location', methods=['POST']) 
+
+@app.route('/api/location', methods=['POST'])
 def save_location():
     data = request.get_json()
     ip = data.get('ip')
@@ -33,11 +34,11 @@ def save_location():
         )
         db.session.add(location)
         db.session.commit()
-        return jsonify({"message": "Location saved"}), 201  
-    
+        return jsonify({"message": "Location saved"}), 201
+
 @app.route('/')
 def index():
-    return "Hello, World! "
+    return "Hello, World!"
 
 if __name__ == '__main__':
     with app.app_context():
