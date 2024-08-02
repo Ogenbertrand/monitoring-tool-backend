@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    restart: always
+    ports:
+      - '8080:8080'
+      - '50000:50000'
+    volumes:
+      - /var/jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_DB=location-db
+      - POSTGRES_USER=location-user
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
