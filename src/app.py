@@ -14,6 +14,9 @@ def save_location():
     data = request.get_json()
     ip = data.get('ip')
 
+    if not ip or not data.get('city') or not data.get('region') or not data.get('country') or not data.get('latitude') or not data.get('longitude'):
+        return jsonify({"message": "Invalid request"}), 400
+
     existing_location = UserLocation.query.filter_by(ip=ip).first()
     if existing_location:
         existing_location.city = data.get('city')
