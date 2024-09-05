@@ -1,5 +1,0 @@
-Flask
-Flask-SQLAlchemy
-psycopg2-binary
-pytest
-python-dotenv
