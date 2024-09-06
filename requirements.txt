@@ -6,3 +6,4 @@ python-dotenv
 flask_migrate
 requests
 schedule
+Flask-Limiter
