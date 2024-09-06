@@ -39,6 +39,32 @@ def save_location():
         db.session.commit()
         return jsonify({"message": "Location saved"}), 201
 
+@app.route('/api/location/batch', methods=['POST'])
+def save_locations_batch():
+    data = request.get_json()
+    updates = data.get('updates')
+
+    if not updates:
+        return jsonify({"message": "No data provided"}), 400
+
+    batch_size = 100
+    locations = [{'ip': update['ip'],
+                  'city': update['city'],
+                  'region': update['region'],
+                  'country': update['country'],
+                  'latitude': update['latitude'],
+                  'longitude': update['longitude']} for update in updates]
+
+    try:
+        for i in range(0, len(locations), batch_size):
+            batch = locations[i:i + batch_size]
+            db.session.bulk_insert_mappings(UserLocation, batch)
+            db.session.commit()
+        return jsonify({"message": "Batch location updates saved"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": str(e)}), 500
+
 @app.route('/')
 def index():
     return "Hello, World!"

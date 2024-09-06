@@ -11,5 +11,8 @@ class UserLocation(db.Model):
     longitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
 
+    __table_args__ = (
+        db.Index('idx_user_location', 'latitude', 'longitude'),
+    )
     def __repr__(self):
         return f'<UserLocation {self.ip} - {self.city}, {self.country}>'

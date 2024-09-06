@@ -10,6 +10,10 @@ class Config:
     
     SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        'pool_size': 20,
+        'max_overflow': 0
+    }
 
     logging.basicConfig(level=logging.DEBUG)
     logging.debug(f"SQLALCHEMY_DATABASE_URI: postgresql://{DB_USER}:*****@{DB_HOST}:{DB_PORT}/{DB_NAME}")
