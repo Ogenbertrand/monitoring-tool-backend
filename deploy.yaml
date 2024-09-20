@@ -1,0 +1,95 @@
+---
+- name: Deploy Trackme app on AWS EC2 (Amazon Linux)
+  hosts: ec2
+  become: true
+
+  vars:
+    project_dir: /home/ec2-user/trackme_app
+
+  tasks:
+  - name: Install Docker
+    dnf:
+      name: docker
+      state: present
+      update_cache: yes
+
+  - name: Start and enable Docker service
+    service:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: Install pip (for Docker Compose)
+    dnf:
+      name: python3-pip
+      state: present
+
+  - name: Install wheel for building packages
+    dnf:
+      name: python3-wheel
+      state: present
+
+  - name: Download Docker Compose binary
+    get_url:
+      url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+      dest: /usr/local/bin/docker-compose
+      mode: '0755'
+
+  - name: Verify Docker Compose installation
+    command: docker-compose --version
+
+  - name: Create project directory on EC2
+    file:
+      path: "{{ project_dir }}"
+      state: directory
+      mode: '0755'
+
+  - name: Copy docker-compose.yml to EC2
+    copy:
+      src: ./docker-compose.yml
+      dest: "{{ project_dir }}/docker-compose.yml"
+      mode: '0644'
+
+  - name: Copy Dockerfile to EC2
+    copy:
+      src: ./Dockerfile
+      dest: "{{ project_dir }}/Dockerfile"
+      mode: '0644'
+
+  - name: Copy requirements.txt to EC2
+    copy:
+      src: ./requirements.txt
+      dest: "{{ project_dir }}/requirements.txt"
+      mode: '0644'
+
+  - name: Create .env file with environment variables for Docker Compose
+    copy:
+      content: |
+        POSTGRES_DB=location-db
+        POSTGRES_USER=location-user
+        POSTGRES_PASSWORD=password
+      dest: "{{ project_dir }}/.env"
+      mode: '0600'
+
+  - name: Change ownership of project directory
+    file:
+      path: "{{ project_dir }}"
+      owner: ec2-user
+      group: ec2-user
+      recurse: true
+
+  - name: Build and deploy the application using Docker Compose
+    command: docker-compose up -d
+    args:
+      chdir: "{{ project_dir }}"
+    become: true
+
+  - name: Ensure the application is running
+    command: docker-compose ps
+    args:
+      chdir: "{{ project_dir }}"
+    register: docker_compose_ps
+
+  - name: Debug Docker Compose status
+    debug:
+      var: docker_compose_ps.stdout
